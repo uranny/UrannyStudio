@@ -31,48 +31,69 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import com.example.urannystudio.R
 import com.example.urannystudio.ui.theme.UrannyStudioTheme
+import com.example.urannystudio.value.Post
+import com.example.urannystudio.value.Value
 
 @Composable
 fun Home(modifier : Modifier = Modifier){
-    val potoLst = List(5){"$it"}
     Surface(modifier = modifier.padding(start = 6.dp, end = 6.dp, top = 6.dp)
     ) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(2)
         ) {
-            items(potoLst){poto ->
-                Poto(name = poto)
+            items(Value.postLst.filter { !it.fav }){ post ->
+                Poto(post = post)
             }
         }
     }
 }
 
 @Composable
-fun Poto(name: String, modifier: Modifier = Modifier) {
+fun Poto(post: Post, modifier: Modifier = Modifier) {
     Column(modifier = Modifier
         .fillMaxSize()
     ) {
-        PotoImg(uri = "zzzzzzzzzzzzzzzzzzzzzzzzzzzz")
-        UserProfile(uri = "^-^", userName = "내 그림이무니당")
+        PotoImg(
+            post
+        )
+        Text(
+            modifier = Modifier.padding(start = 8.dp, end = 6.dp, top = 2.dp),
+            text = post.ttl,
+            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp,
+            maxLines = 1
+        )
+        Text(
+            modifier = Modifier.padding(start = 8.dp, end = 6.dp),
+            text = post.ttl,
+            fontSize = 12.sp,
+            maxLines = 1
+        )
     }
 }
 
 @Composable
-fun PotoImg(uri : String, modifier: Modifier = Modifier){
-    var clickAble by remember { mutableStateOf(false) }
+fun PotoImg(
+    post : Post,
+    modifier: Modifier = Modifier
+){
+    var clickAble by remember { mutableStateOf(post.fav) }
     Box(modifier = modifier
         .fillMaxWidth(1f)
-        .padding(start = 6.dp, end = 6.dp, top = 6.dp, bottom = 4.dp)
+        .padding(start = 6.dp, end = 6.dp, top = 6.dp)
         .height(300.dp)
-        .border(width = 1.dp, color = Color.Black, shape = RoundedCornerShape(5.dp))
-        .background(Color.White)
     ){
+        // 이거 내 그림 사진
         Image(modifier = Modifier
             .padding(1.dp)
             .fillMaxWidth(1f)
@@ -82,41 +103,24 @@ fun PotoImg(uri : String, modifier: Modifier = Modifier){
             contentDescription = "bookmark",
             contentScale = ContentScale.Crop)
 
+        // 이거 북마크 에오
         Image(modifier = Modifier
             .width(40.dp)
             .height(50.dp)
             .align(Alignment.BottomEnd)
             .padding(6.dp)
-            .clickable { clickAble = !clickAble },
-            painter = if(clickAble){ painterResource(id = R.drawable.baseline_bookmark_24) } else {
+            .clickable {
+                clickAble = !clickAble
+                post.fav = clickAble
+                       },
+            painter = if(clickAble){
+                painterResource(id = R.drawable.baseline_bookmark_24)
+            }
+            else {
                 painterResource(id = R.drawable.baseline_bookmark_border_24)
             },
             contentDescription = "bookmark",
             contentScale = ContentScale.Crop)
-    }
-}
-
-@Composable
-fun UserProfile(uri : String, userName : String , modifier: Modifier = Modifier ){
-    Row(modifier = modifier
-        .padding(start = 6.dp, bottom = 6.dp)
-        .fillMaxSize(1f),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Image(modifier = Modifier
-            .width(30.dp)
-            .height(30.dp)
-            .clip(CircleShape),
-            painter = painterResource(id = R.drawable.ic_launcher_background),
-            contentDescription = "image",
-            contentScale = ContentScale.Crop,
-            alignment = Alignment.BottomEnd)
-
-        Text(modifier = Modifier.
-        padding(start = 6.dp),
-            text = userName,
-            fontSize = 12.sp
-        )
     }
 }
 

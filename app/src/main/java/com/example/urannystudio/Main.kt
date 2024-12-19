@@ -7,11 +7,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
@@ -21,6 +24,7 @@ import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,7 +42,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.urannystudio.navitem.Add
+import com.example.urannystudio.navitem.BookMark
 import com.example.urannystudio.navitem.Home
+import com.example.urannystudio.navitem.Search
 import com.example.urannystudio.navitem.System
 import com.example.urannystudio.ui.theme.UrannyStudioTheme
 
@@ -49,8 +55,8 @@ fun Main(modifier: Modifier = Modifier){
     val itemLst = listOf(
         NavItem("Home", Icons.Default.Home),
         NavItem("Search", Icons.Default.Search),
-        NavItem("Add", Icons.Default.Add),
-        NavItem("Like", Icons.Default.Favorite),
+        NavItem("Add", Icons.Default.AddCircle),
+        NavItem("BookMark", Icons.Default.Favorite),
         NavItem("Setting", Icons.Default.Settings)
     )
 
@@ -59,8 +65,6 @@ fun Main(modifier: Modifier = Modifier){
 
     val context = LocalContext.current
     var backPressedTime = 0L
-
-
 
     BackHandler(enabled = true) {
         if(showAdd){
@@ -110,10 +114,12 @@ fun Main(modifier: Modifier = Modifier){
                         modifier = Modifier
                             .fillMaxWidth(1f)
                             .clip(RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp))
-                            .background(Color.White)
+                            .background(Color.White),
+                        containerColor = Color.Black,
+                        contentColor = Color.White,
                     ) {
                         itemLst.forEachIndexed { index, navItem ->
-                            if(index == 1){
+                            if(index == 2){
                                 IconButton(
                                     modifier = Modifier
                                         .weight(1f)
@@ -121,9 +127,12 @@ fun Main(modifier: Modifier = Modifier){
                                     onClick = { showAdd = true }
                                 ) {
                                     Icon(
-                                        modifier = Modifier,
+                                        modifier = Modifier
+                                            .width(50.dp)
+                                            .height(50.dp),
                                         imageVector = navItem.img,
-                                        contentDescription = navItem.label
+                                        contentDescription = navItem.label,
+                                        tint = if(index == selected) Color.Black else Color.White
                                     )
                                 }
                             } else {
@@ -135,9 +144,19 @@ fun Main(modifier: Modifier = Modifier){
                                     icon = {
                                         Icon(
                                             imageVector = navItem.img,
-                                            contentDescription = navItem.label
+                                            contentDescription = navItem.label,
+                                            tint = if(index == selected) Color.Black else Color.White,
                                         )
-                                    }
+                                    },
+                                    colors = NavigationBarItemColors(
+                                        selectedIconColor = Color.Black,
+                                        unselectedIconColor = Color.White,
+                                        selectedTextColor = Color.Black,
+                                        unselectedTextColor = Color.White,
+                                        disabledIconColor = Color.White,
+                                        disabledTextColor = Color.White,
+                                        selectedIndicatorColor = Color.White
+                                    )
                                 )
                             }
                         }
@@ -163,7 +182,9 @@ fun Main(modifier: Modifier = Modifier){
 fun ShowScreen(modifier: Modifier, index : Int){
     when(index){
         0 -> Home(modifier)
-        2 -> System(modifier)
+        1 -> Search(modifier)
+        3 -> BookMark(modifier)
+        4 -> System(modifier)
     }
 }
 
